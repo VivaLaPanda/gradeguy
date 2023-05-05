@@ -13,6 +13,7 @@ import ReactMarkdown from 'react-markdown';
 import logger from '../logger';
 
 const LOCAL_STORAGE_SAMPLES_KEY = 'samples';
+const LOCAL_STORAGE_ESSAY_PROMPT_KEY = 'essayPrompt';
 
 
 interface SampleContainerProps {
@@ -132,12 +133,20 @@ export default function Home() {
     if (storedSamples) {
       setSamples(JSON.parse(storedSamples));
     }
+
+    const storedEssayPrompt = localStorage.getItem(LOCAL_STORAGE_ESSAY_PROMPT_KEY);
+    if (storedEssayPrompt) {
+      setEssayPrompt(storedEssayPrompt);
+    }
   }, []);
 
   // Update local storage whenever samples change
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_SAMPLES_KEY, JSON.stringify(samples));
   }, [samples]);
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_ESSAY_PROMPT_KEY, essayPrompt);
+  }, [essayPrompt]);
 
   const addSample = () => {
     setSamples([...samples, { text: '', grade: '' }]);
