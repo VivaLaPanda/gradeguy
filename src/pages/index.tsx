@@ -123,6 +123,8 @@ export default function Home() {
   const [essayText, setEssayText] = useState('');
   const [gradingOutput, setGradingOutput] = useState('');
   const [essayPrompt, setEssayPrompt] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
 
   // Load samples from local storage on component mount
   useEffect(() => {
@@ -147,6 +149,7 @@ export default function Home() {
 
   const gradeEssay = async () => {
     try {
+      setIsLoading(true);
       const requestData: GradeRequest = {
         samples,
         essayText,
@@ -162,6 +165,8 @@ export default function Home() {
       setGradingOutput((response.data as GradeResponse).grade);
     } catch (error) {
       logger.error({ message: "Error grading essay", error });
+    } finally {
+      setIsLoading(false);
     }
   };
   
@@ -223,7 +228,9 @@ export default function Home() {
           <ReactMarkdown>{gradingOutput}</ReactMarkdown>
         </GradingOutput>
       </TwoColumnLayout>
-      <button onClick={gradeEssay}>Grade Essay</button>
+      <button onClick={gradeEssay} disabled={isLoading}>
+        {isLoading ? 'Grading...' : 'Grade Essay'}
+      </button>
     </Container>
   );
 }
