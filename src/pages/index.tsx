@@ -10,6 +10,7 @@ import axios from 'axios';
 import styled from '@emotion/styled';
 import { GradeRequest, GradeResponse, ErrorResponse } from '../types';
 import ReactMarkdown from 'react-markdown';
+import logger from '../logger';
 
 const LOCAL_STORAGE_SAMPLES_KEY = 'samples';
 
@@ -154,13 +155,13 @@ export default function Home() {
       const response = await axios.post('/api/grade', requestData);
       // type
       if ((response.data as ErrorResponse).error) {
-        console.error((response.data as ErrorResponse).error);
+        logger.error((response.data as ErrorResponse).error);
         return;
       }
-      console.log("Grading output: ", response.data)
+      logger.info({ message: "Grading output: ", data: response.data });
       setGradingOutput((response.data as GradeResponse).grade);
     } catch (error) {
-      console.error(error);
+      logger.error({ message: "Error grading essay", error });
     }
   };
   
